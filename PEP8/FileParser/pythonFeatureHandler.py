@@ -116,6 +116,16 @@ def lookForImports(lines):
     lines = importLines + lines    
     return lines
 
+def tabToFourSpaces(lines):
+    count = 0
+    for line in lines:
+        for char in line:
+            if char == "\t":
+                line = line[:line.index("\t")] + "    " + line[line.index("\t")+1:]
+                lines[count] = line
+        count += 1
+    return lines
+
 
 
 def openFile(fileName):
@@ -126,6 +136,7 @@ def openFile(fileName):
             print(fileName)
             lines = fp.readlines()
             lines=lookForImports(lines)
+            
             fp.seek(0)
             fp.truncate()
             fp.writelines(lines)
