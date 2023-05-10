@@ -4,7 +4,12 @@ import tkinter as tk
 from tkinter import filedialog
 from FileParser import treeWalk
 from BackupCreator import makeBackup
+import argparse
 
+
+parser = argparse.ArgumentParser(description="GUI/no GUI")
+parser.add_argument('-n', '--no_GUI', type=str, help="no GUI")
+args = parser.parse_args()
 
 class DirectoryInputApp:
     def __init__(self, master):
@@ -63,9 +68,8 @@ class DirectoryInputApp:
        
 
     def submit(self):
-        directory_path = self.directory_path.get()
-        makeBackup.createBackupFolder(directory_path)
-        self.output = treeWalk.walkAndExecute(directory_path)        
+        directory_path = self.directory_path.get()        
+        self.output = executeJobsOnFiles(directory_path)       
         self.update_slider(self.output)
         
     def update_slider(self, filesList):
@@ -79,6 +83,17 @@ class DirectoryInputApp:
         print("updated")
         
 
-root = tk.Tk()
-app = DirectoryInputApp(root)
-root.mainloop()
+def executeJobsOnFiles(directory_path):
+
+    makeBackup.createBackupFolder(directory_path)
+    output = treeWalk.walkAndExecute(directory_path)
+    return output
+
+if args.no_GUI != None:
+    output = executeJobsOnFiles(args.no_GUI)
+    print(output)
+
+else:
+    root = tk.Tk()
+    app = DirectoryInputApp(root)
+    root.mainloop()

@@ -35,3 +35,29 @@ def lookForImports(lines):
     lines = importLines + lines    
     return lines
 
+def removeSpacesRightAndLeftFromBrackets(lines):
+    count = 0
+    for line in lines:
+        while "( " in line:
+            line = line[:line.index("( ")+1] + line[line.index("( ")+2:]
+        while "[ " in line:
+            line = line[:line.index("[ ")+1] + line[line.index("[ ")+2:]
+        while "{ " in line:
+            line = line[:line.index("{ ")+1] + line[line.index("{ ")+2:]
+        while " )" in line:
+            line = line[:line.index(" )")] + line[line.index(" )")+1:]
+        while " ]" in line:
+            line = line[:line.index(" ]")] + line[line.index(" ]")+1:]
+        while " }" in line:
+            line = line[:line.index(" }")] + line[line.index(" }")+1:]
+        count += 1
+
+    lines[count] = line
+
+def addSpacesArroundEqual
+            
+def lineDepth(lines):
+    count = 0
+    for line in lines:
+
+        count += 1
