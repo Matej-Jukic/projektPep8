@@ -1,5 +1,19 @@
 from . import FeatureClass
 
+operators = [
+    "+", "-", "*", 
+    "/", "%", "**",
+    "//", "=", "+=",
+    "-=", "*=", "/=",
+    "%=", "//=", "**=",
+    "&=", "|=", "^=",
+    ">>=", "<<=", "==",
+    "!=", "<", ">",
+    "<=", ">=", "&", 
+    "|", "^", "~",
+    "<<", ">>"
+    ]
+
 def detectToken(line):
 
     isFeature = False
@@ -30,8 +44,7 @@ def onlySpaceCharacters(line):
             break
 
     if(tokenIndex>-1):
-        #print("Usao")
-        #print(line)
+        
         for x in range(tokenIndex):
             if line[x] != " ":
                 
@@ -127,6 +140,37 @@ def tabToFourSpaces(lines):
     return lines
 
 
+def addSpacesArroundOperators(lines):
+
+    lineCount = 0
+
+    for line in lines:
+        for operator in operators:
+            if operator in line:
+                opLen = len(operator)
+                count=0
+                for char in line[:1-opLen]:
+                    if line[count:count+opLen] == operator:                        
+                        if line[count:count+opLen+1] != operator + " ":
+                            if line[count:count+opLen+1] not in operators:
+                                line = line[:count+opLen] + " " + line[count+opLen:]                                
+                        if count > 0 and line[count-1:count+opLen] != (" " + operator):
+                            if line[count-1:count+opLen] not in operators:
+                                line = line[:count] + " " + line[count:]                              
+                    count += 1
+        
+        lines[lineCount] = line
+        lineCount += 1
+    
+    return lines
+
+def removeSpacesForOperatorsInBrackets(lines):
+    linecount = 0
+
+    
+
+
+
 
 def openFile(fileName):
  
@@ -136,6 +180,10 @@ def openFile(fileName):
             print(fileName)
             lines = fp.readlines()
             lines=lookForImports(lines)
+            lines=tabToFourSpaces(lines)
+            lines=addSpacesArroundOperators(lines)
+            
+            #lines= 
             
             fp.seek(0)
             fp.truncate()

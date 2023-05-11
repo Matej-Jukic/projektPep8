@@ -1,3 +1,20 @@
+operators = [
+    "+", "-", "*", 
+    "/", "%", "**",
+    "//", "=", "+=",
+    "-=", "*=", "/=",
+    "%=", "//=", "**=",
+    "&=", "|=", "^=",
+    ">>=", "<<=", "==",
+    "!=", "<", ">",
+    "<=", ">=", "&", 
+    "|", "^", "~",
+    "<<", ">>"
+    ]
+
+
+
+
 def openFile(fileName):
     
     lines = []
@@ -36,6 +53,8 @@ def lookForImports(lines):
     return lines
 
 def removeSpacesRightAndLeftFromBrackets(lines):
+
+
     count = 0
     for line in lines:
         while "( " in line:
@@ -51,12 +70,35 @@ def removeSpacesRightAndLeftFromBrackets(lines):
         while " }" in line:
             line = line[:line.index(" }")] + line[line.index(" }")+1:]
         count += 1
-
     lines[count] = line
 
-def addSpacesArroundEqual
-            
+
+def addSpacesArroundOperators(lines):
+
+    lineCount = 0
+
+    for line in lines:
+        for operator in operators:
+            if operator in line:
+                opLen = len(operator)
+                count=0
+                for char in line[:1-opLen]:
+                    if line[count:count+opLen] == operator:                        
+                        if line[count:count+opLen+1] != operator + " ":
+                            if line[count:count+opLen+1] not in operators:
+                                line = line[:count+opLen] + " " + line[count+opLen:]                                
+                        if count > 0 and line[count-1:count+opLen] != (" " + operator):
+                            if line[count-1:count+opLen] not in operators:
+                                line = line[:count] + " " + line[count:]                              
+                    count += 1
+        
+        lines[lineCount] = line
+        lineCount += 1
+
+    return lines
+
 def lineDepth(lines):
+
     count = 0
     for line in lines:
 
