@@ -97,6 +97,82 @@ def addSpacesArroundOperators(lines):
 
     return lines
 
+def removeSpacesForOperatorsInBrackets(line):
+
+
+    openBrackets = ["[", "("]
+    closedBrackets = ["]", ")"]
+    
+    for operator in operators:
+        operatorSpace = " " + operator + " "
+        if operatorSpace in line:
+            count = 0
+            indexList = []
+            oSpaceIndex = line.index(operatorSpace)
+            lenOS = len(operatorSpace)
+            indexList.append(oSpaceIndex)
+            start = oSpaceIndex + lenOS
+            for x in line[start:-lenOS+1]:
+                if operatorSpace == line[start+count:start+count+lenOS]:
+                    indexList.append(start+count)
+                    
+                count += 1
+            
+            indexList.reverse()
+            print(indexList)
+            for OSIndex in indexList:
+                index2=OSIndex + lenOS
+                print(index2)
+                for x in line[index2:]:
+                    if x in openBrackets:
+                        break
+                    if x in closedBrackets:
+                        line = line[:OSIndex]+operator+line[index2:]
+                        
+                        break
+                        
+    return line
+
+def removeBracketOperatorSpacesForEachLine(lines):
+    
+    
+    count=0
+    for line in lines:
+        removeSpacesForOperatorsInBrackets(line)
+        lines[count] = line        
+        count += 1
+    return lines
+
+def detectFunction(line):
+    
+    isFunction = False
+
+    
+    if "def " in line[0:4] or " def " in line:
+        isFunction = True
+        indentDepth = line.find("def")
+
+    return isFunction
+
+def detectClass(line):
+    isClass = False
+    if "class " in line[0:6] or " class " in line:
+        isClass = True
+    return isClass
+
+# def addEmptyLinesClass(lines):
+#     count = 0
+    
+#     for line in lines:
+        
+#         if detectClass(line):
+#             if lines[count-1]
+            
+        
+    
+        
+
+
 def lineDepth(lines):
 
     count = 0

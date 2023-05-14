@@ -139,6 +139,30 @@ def tabToFourSpaces(lines):
         count += 1
     return lines
 
+def removeSpacesRightAndLeftFromBrackets(lines):
+
+
+    count = 0
+    for line in lines:
+        
+        while "( " in line:
+            line = line[:line.index("( ")+1] + line[line.index("( ")+2:]
+        while "[ " in line:
+            line = line[:line.index("[ ")+1] + line[line.index("[ ")+2:]
+        while "{ " in line:
+            line = line[:line.index("{ ")+1] + line[line.index("{ ")+2:]
+        while " )" in line:
+            line = line[:line.index(" )")] + line[line.index(" )")+1:]
+        while " ]" in line:
+            line = line[:line.index(" ]")] + line[line.index(" ]")+1:]
+        while " }" in line:
+            line = line[:line.index(" }")] + line[line.index(" }")+1:]
+        
+        lines[count] = line
+        count += 1
+    
+    return lines
+
 
 def addSpacesArroundOperators(lines):
 
@@ -164,10 +188,54 @@ def addSpacesArroundOperators(lines):
     
     return lines
 
-def removeSpacesForOperatorsInBrackets(lines):
-    linecount = 0
 
+def removeSpacesForOperatorsInBrackets(line):
+
+
+    openBrackets = ["[", "("]
+    closedBrackets = ["]", ")"]
     
+    for operator in operators:
+        operatorSpace = " " + operator + " "
+        if operatorSpace in line:
+            count = 0
+            indexList = []
+            oSpaceIndex = line.index(operatorSpace)
+            lenOS = len(operatorSpace)
+            indexList.append(oSpaceIndex)
+            start = oSpaceIndex + lenOS
+            for x in line[start:-lenOS+1]:
+                if operatorSpace == line[start+count:start+count+lenOS]:
+                    indexList.append(start+count)
+                    
+                count += 1
+            
+            indexList.reverse()
+            print(indexList)
+            for OSIndex in indexList:
+                index2=OSIndex + lenOS
+                print(index2)
+                for x in line[index2:]:
+                    if x in openBrackets:
+                        break
+                    if x in closedBrackets:
+                        line = line[:OSIndex]+operator+line[index2:]
+                        
+                        break
+                        
+    return line
+
+def removeBracketOperatorSpacesForEachLine(lines):
+    
+    
+    count=0
+    for line in lines:
+        removeSpacesForOperatorsInBrackets(line)
+        lines[count] = line        
+        count += 1
+    return lines
+
+
 
 
 
@@ -179,11 +247,12 @@ def openFile(fileName):
         with open(fileName, "r+") as fp:
             print(fileName)
             lines = fp.readlines()
-            lines=lookForImports(lines)
-            lines=tabToFourSpaces(lines)
-            lines=addSpacesArroundOperators(lines)
-            
-            #lines= 
+            lines = lookForImports(lines)
+            lines = tabToFourSpaces(lines)
+            lines = removeSpacesRightAndLeftFromBrackets(lines)
+            lines = addSpacesArroundOperators(lines)
+            lines = removeBracketOperatorSpacesForEachLine(lines)
+            # lines =  
             
             fp.seek(0)
             fp.truncate()
