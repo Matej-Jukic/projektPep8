@@ -1,5 +1,3 @@
-from . import FeatureClass
-
 operators = [
     "+", "-", "*", 
     "/", "%", "**",
@@ -225,6 +223,7 @@ def removeSpacesForOperatorsInBrackets(line):
                         
     return line
 
+
 def removeBracketOperatorSpacesForEachLine(lines):
     
     
@@ -236,11 +235,66 @@ def removeBracketOperatorSpacesForEachLine(lines):
     return lines
 
 
+def checkForEmptyLines(line):
+    
+    
+    if (all(flag == " " for flag in line[:-1])):
+        return True
+    if line == "\n":
+        return True
+    return False
 
 
+def removeEmptyLines(lines):
+    
+    
+    count = 0
+    for line in lines:
+        
+        if checkForEmptyLines(line):
+            lines = lines[:count] + lines [count+1:]
+        count += 1
+
+    return lines
+
+
+def addEmptyLinesAboveAndBeloveClassesMethodsFunctions(lines):
+    
+    singleLine = ["\n"]
+    count = 0
+    adder = 0
+    for line in lines:
+        print(count)
+        print(lines)
+        if line[0:6] == "class " or line[0:4] == "def ":
+            
+            if lines[count-2:count] == ["\n", "\n"]:
+                surroundedLine = [line] + 2*singleLine
+                adder = 3
+            elif lines[count-1:count] == ["\n"]:
+                surroundedLine = singleLine + [line] + 2*singleLine
+                adder = 4
+            else:
+                surroundedLine = 2*singleLine + [line] + 2*singleLine
+                adder = 5
+            lines = lines[:count] + surroundedLine + lines[count+1:]
+            count += adder
+        elif " def " in line:
+            if lines[count-1:count] == ["\n"]:
+                surroundedLine = [line] + singleLine
+                adder = 2
+            else:
+                surroundedLine = singleLine + [line] + singleLine
+                adder = 3
+            lines = lines[:count] + surroundedLine + lines[count+1:]
+            count += 3
+        else:
+            count += 1
+    return lines
 
 
 def openFile(fileName):
+
  
     if( fileName [ len(fileName)-3 : len(fileName) ] == ".py" ):
         
@@ -252,6 +306,8 @@ def openFile(fileName):
             lines = removeSpacesRightAndLeftFromBrackets(lines)
             lines = addSpacesArroundOperators(lines)
             lines = removeBracketOperatorSpacesForEachLine(lines)
+            lines = removeEmptyLines(lines)
+            lines = addEmptyLinesAboveAndBeloveClassesMethodsFunctions(lines)
             # lines =  
             
             fp.seek(0)

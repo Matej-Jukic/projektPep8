@@ -161,12 +161,10 @@ def detectClass(line):
     return isClass
 
 # def addEmptyLinesClass(lines):
-#     count = 0
-    
-#     for line in lines:
-        
+#     count = 0    
+#     for line in lines:        
 #         if detectClass(line):
-#             if lines[count-1]
+#             if lines[count-1]:
             
         
     
