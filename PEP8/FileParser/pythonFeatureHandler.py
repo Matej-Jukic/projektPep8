@@ -238,7 +238,7 @@ def removeBracketOperatorSpacesForEachLine(lines):
 def checkForEmptyLines(line):
     
     
-    if (all(flag == " " for flag in line[:-1])):
+    if (all(char == " " for char in line[:-1])):
         return True
     if line == "\n":
         return True
@@ -258,38 +258,32 @@ def removeEmptyLines(lines):
     return lines
 
 
-def addEmptyLinesAboveAndBeloveClassesMethodsFunctions(lines):
+def addEmptyLinesAboveAndBelowClassesMethodsFunctions(lines):
     
     singleLine = ["\n"]
     count = 0
-    adder = 0
+    
     for line in lines:
-        print(count)
-        print(lines)
+
         if line[0:6] == "class " or line[0:4] == "def ":
-            
-            if lines[count-2:count] == ["\n", "\n"]:
-                surroundedLine = [line] + 2*singleLine
-                adder = 3
-            elif lines[count-1:count] == ["\n"]:
-                surroundedLine = singleLine + [line] + 2*singleLine
+            adder = 5    
+            if checkForEmptyLines(lines[count-1]):
                 adder = 4
-            else:
-                surroundedLine = 2*singleLine + [line] + 2*singleLine
-                adder = 5
+                if checkForEmptyLines(lines[count-2]):
+                    adder = 3
+            surroundedLine = (adder-3)*singleLine + [line] + 2*singleLine
             lines = lines[:count] + surroundedLine + lines[count+1:]
             count += adder
         elif " def " in line:
-            if lines[count-1:count] == ["\n"]:
-                surroundedLine = [line] + singleLine
+            adder = 3
+            if checkForEmptyLines(lines[count-1]):
                 adder = 2
-            else:
-                surroundedLine = singleLine + [line] + singleLine
-                adder = 3
+            surroundedLine = (adder-2)*singleLine + [line] + singleLine
             lines = lines[:count] + surroundedLine + lines[count+1:]
-            count += 3
+            count += adder
         else:
             count += 1
+
     return lines
 
 
@@ -307,7 +301,7 @@ def openFile(fileName):
             lines = addSpacesArroundOperators(lines)
             lines = removeBracketOperatorSpacesForEachLine(lines)
             lines = removeEmptyLines(lines)
-            lines = addEmptyLinesAboveAndBeloveClassesMethodsFunctions(lines)
+            lines = addEmptyLinesAboveAndBelowClassesMethodsFunctions(lines)
             # lines =  
             
             fp.seek(0)
